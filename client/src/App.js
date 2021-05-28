@@ -5,6 +5,7 @@ import HomeScreen from './screen/HomeScreen'
 import ProductDetailScreen from './screen/ProductDetailScreen'
 import CartScreen from './screen/CartScreen'
 import LoginScreen from './screen/LoginScreen'
+import RegisterScreen from './screen/RegisterScreen'
 import {Container} from 'react-bootstrap'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 
@@ -21,6 +22,7 @@ const App = () => {
                     <Route path='/product/:id' component={ProductDetailScreen}></Route>
                     <Route path='/cart/:id?' component={CartScreen}></Route>
                     <Route path='/signin' component={LoginScreen}></Route>
+                    <Route path='/register' component={RegisterScreen}></Route>
                 </Container>
             </main>
             <Footer/>
