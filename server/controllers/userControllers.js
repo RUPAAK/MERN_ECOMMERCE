@@ -16,6 +16,7 @@ const loginUser= errorAsync(async(req, res)=>{
     }else{
         res.status(401)
         throw new Error("Invalid Credientials")
+
     }
 })
 
@@ -26,7 +27,6 @@ const getUserProfile= errorAsync(async(req,res)=>{
 
 const registerUser = errorAsync(async (req, res) => {
     const { name, email, password } = req.body;
-  
     const userExist = await User.findOne({ email });
   
     if (userExist) {
@@ -42,7 +42,7 @@ const registerUser = errorAsync(async (req, res) => {
   
     if (user) {
       res.status(201);
-  
+      console.log9user
       res.json({
         _id: user._id,
         name: user.name,
@@ -52,6 +52,7 @@ const registerUser = errorAsync(async (req, res) => {
       });
     } else {
       res.status(400);
+      console.log('at last')
       throw new Error("Invalid User Data");
     }
   });
