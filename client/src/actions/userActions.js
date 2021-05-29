@@ -1,7 +1,11 @@
 import axios from 'axios'
-import {USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL} from '../constants/userConstants'
+import {
+  USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT,
+  USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL,
+  USER_PROFILE_FAIL, USER_PROFILE_SUCCESS, USER_PROFILE_REQUEST
+} from '../constants/userConstants'
 
-export const login=(email, password)=>async(dispatch)=>{
+export const login=(email, password)=>async(dispatch, getState)=>{
     try {
         dispatch({type: USER_LOGIN_REQUEST})
         const {data}= await axios.post('http://localhost:5000/api/users/login', {email, password})
@@ -19,6 +23,7 @@ export const login=(email, password)=>async(dispatch)=>{
             : error.message})
     }
 }
+
 export const logout = () => async (dispatch) => {
   localStorage.removeItem("userInfo");
 
@@ -44,7 +49,7 @@ export const register=(name, email, password)=>async (dispatch)=>{
       payload: data,
     });
 
-    // localStorage.setItem("userInfo", JSON.stringify(data));
+    localStorage.setItem("userInfo", JSON.stringify(data));
 
   } catch (err) {
     dispatch({
@@ -54,5 +59,29 @@ export const register=(name, email, password)=>async (dispatch)=>{
           ? err.response.data.message
           : err.message,
     });
+  }
+}
+
+export const profileDetails=()=>async(dispatch, getState)=>{
+  try {
+    dispatch({type: USER_PROFILE_REQUEST})
+    const {userlogin: {userInfo}}= getState()
+    const header={
+      headers:{
+        authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const { data } = await axios.get("http://localhost:5000/api/users/profile", header);
+    console.log(data)
+    dispatch({
+      type: USER_PROFILE_SUCCESS,
+      payload: data
+    })
+    
+  } catch (err) {
+    dispatch({
+      type: USER_PROFILE_FAIL,
+      payload: err.response && err.response.data.message? err.response.data.message : err.message
+    })
   }
 }

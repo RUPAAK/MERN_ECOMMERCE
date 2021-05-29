@@ -23,12 +23,11 @@ const RegisterScreen = ({history}) => {
         }else{
             dispatch(register(name, email, password))
         }
+        setname('')
+        setemail('')
+        setpassword('')
+        setconfirmpassword('')
     }
-    useEffect(()=>{
-        if(userInfo){
-            history.push('/signin');
-        }
-    })
     return (
         <>
             <FormContainer>
@@ -39,22 +38,22 @@ const RegisterScreen = ({history}) => {
 
                 <Form.Group>
                     <Form.Label>Name</Form.Label>
-                        <Form.Control onChange={(e)=> setname(e.target.value)} type="name" placeholder="Enter Name">
+                        <Form.Control onChange={(e)=> setname(e.target.value)} type="name" value={name} placeholder="Enter Name">
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Email</Form.Label>
-                        <Form.Control onChange={(e)=> setemail(e.target.value)} type="email" placeholder="Enter Email">
+                        <Form.Control onChange={(e)=> setemail(e.target.value)} type="email" value={email} placeholder="Enter Email">
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Password</Form.Label>
-                        <Form.Control onChange={(e)=> setpassword(e.target.value)} type="password" placeholder="Enter Password">
+                        <Form.Control onChange={(e)=> setpassword(e.target.value)} type="password" value={password} placeholder="Enter Password">
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control onChange={(e)=> setconfirmpassword(e.target.value)} type="password" placeholder="onfirm Password">
+                        <Form.Control onChange={(e)=> setconfirmpassword(e.target.value)} value={confirmpassword} type="password" placeholder="Confirm Password">
                     </Form.Control>
                 </Form.Group>
 

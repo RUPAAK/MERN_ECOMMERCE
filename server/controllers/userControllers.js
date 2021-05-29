@@ -57,4 +57,29 @@ const registerUser = errorAsync(async (req, res) => {
     }
   });
 
-module.exports={loginUser, getUserProfile, registerUser}
+const userProfileUpdate= errorAsync(async(req, res)=>{
+  const user= await User.findOne({email})
+
+  if(user){
+    user.name= req.body.name || user.name
+    user.email= req.body.email || user.email
+
+    if(req.body.password){
+      user.password= req.body.password
+    }
+
+    const updatedUser= await user.save();
+    res.json({
+      _id: userProfileUpdate._id,
+      name: userProfileUpdate.name,
+      email: userProfileUpdate.email,
+      isAdmin: userProfileUpdate.isAdmin,
+      token: generateToken(userProfileUpdate._id)
+    })
+  }else{
+    res.status(404)
+    throw new Error('FAILED TO UPDATE. SOME ERROR OCCURED')
+  }
+})
+
+module.exports={loginUser, getUserProfile, registerUser, userProfileUpdate}
