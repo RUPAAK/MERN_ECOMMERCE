@@ -1,75 +1,64 @@
-import React, {useState, useEffect} from 'react'
-import {Row, Col, Form, Button} from 'react-bootstrap'
-import {Link} from 'react-router-dom'
-import FormContainer from '../components/FormContainer'
-import {register} from '../actions/userActions'
-import {useDispatch, useSelector} from 'react-redux'
+import React, { useEffect, useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserDetails } from "../actions/userActions";
 
-const RegisterScreen = ({history}) => {
-    const [name, setname] = useState('')
-    const [email, setemail] = useState('')
-    const [password, setpassword] = useState('')
-    const [confirmpassword, setconfirmpassword] = useState('')
+const ProfileScreen = ({ history }) => {
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
 
-    const userRegister= useSelector(state=> state.userRegister)
-    const {loading, error, userInfo}= userRegister
-    const dispatch = useDispatch()
+    const userlogin = useSelector((state) => state.userlogin);
+    const userDetails = useSelector(state => state.userDetails)
 
+    const { loading, error, user } = userDetails;
 
-    const onSubmitHandler=(e)=>{
-        e.preventDefault();
-        if(password !== confirmpassword){
-            alert('Password Not Matching')
-        }else{
-            dispatch(register(name, email, password))
+    const { userInfo } = userlogin;
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (!userInfo) {
+            history.push("/login");
+        } else {
+            if (!user.name) {
+                dispatch(getUserDetails());
+            } else {
+                setName(user.name);
+                setEmail(user.email);
+            }
         }
-        setname('')
-        setemail('')
-        setpassword('')
-        setconfirmpassword('')
-    }
+    }, [history, userInfo, user, dispatch]);
+
+
     return (
-        <>
-            <FormContainer>
-            <Form onSubmit={onSubmitHandler}>
-                <h1>Sign Up</h1>
-                {loading && <h3>Loading...</h3>}
-                {error && <h3>{error}</h3>}
+        <Row>
+            <Col md={3}>
+                <h2>User Profile</h2>
 
-                <Form.Group>
-                    <Form.Label>Name</Form.Label>
-                        <Form.Control onChange={(e)=> setname(e.target.value)} type="name" value={name} placeholder="Enter Name">
-                    </Form.Control>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Email</Form.Label>
-                        <Form.Control onChange={(e)=> setemail(e.target.value)} type="email" value={email} placeholder="Enter Email">
-                    </Form.Control>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Password</Form.Label>
-                        <Form.Control onChange={(e)=> setpassword(e.target.value)} type="password" value={password} placeholder="Enter Password">
-                    </Form.Control>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control onChange={(e)=> setconfirmpassword(e.target.value)} value={confirmpassword} type="password" placeholder="Confirm Password">
-                    </Form.Control>
-                </Form.Group>
+                <Form>
+                    <Form.Group controlId="name">
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            type="name"
+                            paceholde="Enter Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        ></Form.Control>
+                    </Form.Group>
 
-                <Button type="submit" variant="primary">
-                        Register
-                </Button>
+                    <Form.Group controlId="email">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control
+                            type="email"
+                            paceholde="Enter email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        ></Form.Control>
+                    </Form.Group>
+                </Form>
+            </Col>
+        </Row>
+    );
+};
 
-                <Row className="py-3">
-                    <Col>
-                        Already Signup?<Link to={`/signin`}> Login</Link> Here
-                    </Col>
-                </Row>
-            </Form>
-            </FormContainer>
-        </>
-    )
-}
-
-export default RegisterScreen
+export default ProfileScreen;
