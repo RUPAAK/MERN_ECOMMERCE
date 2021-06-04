@@ -1,64 +1,89 @@
 import React, { useEffect, useState } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserDetails } from "../actions/userActions";
+import { register } from "../actions/userActions";
+import FormContainer from "../components/FormContainer";
 
-const ProfileScreen = ({ history }) => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+const RegisterScreen = ({ history }) => {
+  // email, name , password, confirmPassword
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassoword] = useState("");
+  const [message, setMessage] = useState(null);
 
-    const userlogin = useSelector((state) => state.userlogin);
-    const userDetails = useSelector(state => state.userDetails)
+  const userRegister = useSelector((state) => state.userRegister);
 
-    const { loading, error, user } = userDetails;
+  const { loading, error, userInfo } = userRegister;
 
-    const { userInfo } = userlogin;
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
+  const submitHandler = (e) => {
+    e.preventDefault();
 
-    useEffect(() => {
-        if (!userInfo) {
-            history.push("/login");
-        } else {
-            if (!user.name) {
-                dispatch(getUserDetails());
-            } else {
-                setName(user.name);
-                setEmail(user.email);
-            }
-        }
-    }, [history, userInfo, user, dispatch]);
+    if (password !== confirmPassword) {
+      setMessage("Password donot match!");
+    }
 
+    dispatch(register(name, email, password));
+  };
 
-    return (
-        <Row>
-            <Col md={3}>
-                <h2>User Profile</h2>
+  return (
+    <FormContainer>
+      <h1>Sign Up</h1>
 
-                <Form>
-                    <Form.Group controlId="name">
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            type="name"
-                            paceholde="Enter Name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        ></Form.Control>
-                    </Form.Group>
+      {message && <h1>{message}</h1>}
 
-                    <Form.Group controlId="email">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control
-                            type="email"
-                            paceholde="Enter email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        ></Form.Control>
-                    </Form.Group>
-                </Form>
-            </Col>
-        </Row>
-    );
+      {error && <h3>{error}</h3>}
+      {loading && <h1>Loading...</h1>}
+
+      <Form onSubmit={submitHandler}>
+        <Form.Group controlId="name">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            type="name"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="email">
+          <Form.Label>Email Address</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="confirmPassword">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Enter Password Agin"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassoword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Button type="submit" variant="primary">
+          Register
+        </Button>
+      </Form>
+    </FormContainer>
+  );
 };
 
-export default ProfileScreen;
+export default RegisterScreen;
