@@ -1,11 +1,13 @@
-import React from "react";
-import { Col, Image, ListGroup, Row } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import React, {useEffect} from "react";
+import { Col, Image, ListGroup, Row, Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import {createOrder} from '../actions/orderActions'
 import CheckoutSteps from "../components/CheckoutSteps";
+import {useDispatch, useSelector} from 'react-redux'
 
-const PlaceOrderScreen = () => {
-  const cart = useSelector((state) => state.cart);
+const PlaceOrderScreen = ({history}) => {
+  const cart = useSelector(state => state.cart);
+  const dispatch = useDispatch()
 
   // Calculate Price
   cart.itemsPrice = cart.cartItems
@@ -14,15 +16,31 @@ const PlaceOrderScreen = () => {
 
   cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2);
 
-  cart.taxPrice = Number(0.15 * cart.itemsPrice).toFixed(2);
+  cart.taxPrice = (0.15 * cart.itemsPrice).toFixed(2);
 
-  cart.totalPrice = (
-    Number(cart.itemPrice) +
-    Number(cart.shippingPrice) +
-    Number(cart.taxPrice)
-  ).toFixed(2);
+  
+  cart.totalPrice = Number(cart.shippingPrice)+ Number(cart.itemsPrice) + Number(cart.taxPrice)
 
-  const placeOrderHandler = () => {};
+  const orderCreate= useSelector(state=> state.orderCreate)
+  const {order, success, error}= orderCreate
+
+  useEffect(() => {
+    if(success){
+      history.push(`/order/${order._id}`)
+    }
+  }, [history, success, order])
+
+  const placeOrderHandler = () => {
+    dispatch(createOrder({
+      orderItems: cart.Items,
+      shippingAddress: cart.shippingAddress,
+      paymentMethod: cart.paymentMethod.paymentMethod,
+      itemsPrice: cart.itemsPrice,
+      taxPrice: cart.taxPrice,
+      shippingPrice: cart.shippingPrice,
+      totalPrice: cart.totalPrice
+    }))
+  };
 
   return (
     <>
@@ -37,7 +55,7 @@ const PlaceOrderScreen = () => {
               <p>
                 <strong>Address: </strong>
                 {cart.shippingAddress.address}, {cart.shippingAddress.city},
-                {cart.shippingAddress.postalCode},{" "}
+                {cart.shippingAddress.postalCode},
                 {cart.shippingAddress.country},
               </p>
             </ListGroup.Item>
@@ -91,6 +109,44 @@ const PlaceOrderScreen = () => {
               )}
             </ListGroup.Item>
           </ListGroup>
+        </Col>
+        <Col md={4}>
+          <Card>
+            <ListGroup varient="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Items</Col>
+                  <Col>${cart.itemsPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Shipping</Col>
+                  <Col>${cart.shippingPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Tax</Col>
+                  <Col>${cart.taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total</Col>
+                  <Col>${cart.totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+            </ListGroup>
+            <ListGroup.Item>
+              <Button tyoe="submit" className="btn-block" disabled={cart.cartItems=== 0} onClick={placeOrderHandler}>
+                    Place Order
+              </Button>
+            </ListGroup.Item>
+          </Card>
         </Col>
       </Row>
     </>
