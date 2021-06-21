@@ -11,9 +11,11 @@ import ProfileScreen from './screen/ProfileScreen'
 import ShippingAddress from './screen/ShippingAddress'
 import PlaceOrderScreen from './screen/PlaceOrderScreen'
 import PaymentScreen from "./screen/PaymentScreen";
+import OrderScreen from "./screen/OrderScreen";
 import {Container} from 'react-bootstrap'
 
 import './App.css'
+
 
 
 const App = () => {
@@ -31,6 +33,7 @@ const App = () => {
                     <Route path='/shipping' component={ShippingAddress}></Route>
                     <Route path="/placeorder" component={PlaceOrderScreen}></Route>
                     <Route path="/payment" component={PaymentScreen}></Route>
+                    <Route path="/order/:id?" component={OrderScreen}></Route>
                 </Container>
             </main>
             <Footer/>
