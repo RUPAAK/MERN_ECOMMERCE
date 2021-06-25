@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react'
 import {addToCart, removeFromCart} from '../actions/cartActions'
-import { Col, ListGroup, Row, Image, Form, Button } from "react-bootstrap";
+import { Col, Row, Image, Form, Button, Card, ListGroup } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 
-const CartScreen = ({match, location}) => {
+const CartScreen = ({match, location, history}) => {
     const qty= location.search? Number(location.search.split('=')[1]): 1
     const productId= match.params.id
     const dispatch = useDispatch()
@@ -21,6 +21,10 @@ const CartScreen = ({match, location}) => {
     const removeFromCartHandler=(id)=>{
         dispatch(removeFromCart(id))
     }
+
+    const checkoutHandler = () => {
+      history.push("/signin?redirect=shipping");
+    };
 
     return (
         <>
@@ -83,6 +87,33 @@ const CartScreen = ({match, location}) => {
             ))}
           </ListGroup>
         )}
+      </Col>
+      <Col md={4}>
+        <Card>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>
+                Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
+                items
+              </h2>
+              $
+              {cartItems
+                .reduce((acc, item) => acc + item.qty * item.price, 0)
+                .toFixed(2)}
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Button
+                type="button"
+                className="btn-block"
+                disabled={cartItems.length === 0}
+                onClick={checkoutHandler}
+              >
+                Proceed to Checkout
+              </Button>
+            </ListGroup.Item>
+          </ListGroup>
+        </Card>
       </Col>
     </Row>
         </>
