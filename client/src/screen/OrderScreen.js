@@ -45,11 +45,11 @@ const OrderScreen = ({ match, history }) => {
       dispatch({ type: ORDER_PAY_RESET });
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
-      addPayPalScript()
-    } else {
       if (!window.paypal) {
-        setSdkReady(true);
+        addPayPalScript()
       }
+    } else {
+      setSdkReady(true);
     }
   }, [order, dispatch, orderId])
 
