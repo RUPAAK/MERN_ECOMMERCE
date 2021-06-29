@@ -32,7 +32,7 @@ const PlaceOrderScreen = ({history}) => {
 
   const placeOrderHandler = () => {
     dispatch(createOrder({
-      orderItems: cart.Items,
+      orderItems: cart.cartItems,
       shippingAddress: cart.shippingAddress,
       paymentMethod: cart.paymentMethod.paymentMethod,
       itemsPrice: cart.itemsPrice,

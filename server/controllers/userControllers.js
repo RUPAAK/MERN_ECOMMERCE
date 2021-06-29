@@ -92,4 +92,10 @@ const userProfileUpdate= errorAsync(async(req, res)=>{
   }
 })
 
-module.exports={loginUser, getUserProfile, registerUser, userProfileUpdate}
+const getUsers= errorAsync(async(req, res)=>{
+  const users= await User.find({})
+  res.json(users)
+})
+
+
+module.exports={loginUser, getUserProfile, registerUser, userProfileUpdate, getUsers}

@@ -11,9 +11,11 @@ const addOrderItems= asyncHandler(async(req, res)=>{
         shippingPrice,
         totalPrice,
     }= await req.body
+    console.log(orderItems)
+
 
     if(orderItems && orderItems.length===0){
-        res,status(400)
+        res.status(400)
         throw new Error('No Order Items')
     }else{
         const order= new Order({
@@ -64,4 +66,9 @@ const updateOrderById = asyncHandler(async (req, res)=>{
     }
 })
 
-module.exports= {addOrderItems, getOrderById, updateOrderById}
+const getMyOrder= asyncHandler(async(req, res)=>{
+    const orders= await Order.find({user: req.user.id})
+    return res.send(orders)
+})
+
+module.exports= {addOrderItems, getOrderById, updateOrderById, getMyOrder}
